@@ -1,3 +1,100 @@
+@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* styles.css */
+:root[data-theme="light"] {
+  --background-color: white;
+  --text-color: black;
+}
+
+:root[data-theme="dark"] {
+  --background-color: black;
+  --text-color: white;
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.btn {
+  @apply px-4 py-2 rounded-md hover:scale-105;
+}
+
+.center {
+  @apply flex items-center justify-center;
+}
+
+.error {
+  @apply text-sm text-red-500;
+}
+
+.xs-error {
+  @apply text-xs text-red-500;
+}
+
+.hover-menu {
+  @apply relative cursor-pointer hover:text-lightPur;
+}
+
+.hover-menu::after {
+  @apply content-[''] block absolute bottom-0 left-0 h-0.5 bg-lightPur;
+  width: 0%;
+  transition: width 0.3s ease-out;
+}
+
+.hover-menu:hover::after {
+  width: 100%;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+
+.animate-spin {
+  animation: spin 5s linear infinite;
+}
+
+hr {
+  height: 1px;
+  background-color: rgba(255, 255, 255, 0.03);
+  --background-color: hsla(0, 0%, 100%, 0.03300000000000003);
+}
+
+.btm-comp {
+  /* @apply w-full h-[calc(100vh - 72px)]; */
+  /* height: calc(100vh- 72px); */
+}
+
+.btn-primary {
+  @apply bg-white/80;
+  background: #4d2ff5;
+}
+
+.card {
+  @apply min-w-[350px] bg-white/5 rounded-xl p-5 border border-white/10 backdrop-blur-md;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="password"],
+select {
+  @apply w-full px-2 py-2 bg-transparent border-2 rounded-lg outline-none border-white/20;
+}
+
+form label {
+  @apply block my-1 text-base text-white;
+}
+
+.form-group {
+  @apply mb-5;
+}
+
+.gradient-txt {
+  @apply text-transparent bg-clip-text bg-gradient-to-r from-[#4b83ff]  to-[#b794f4];
+}

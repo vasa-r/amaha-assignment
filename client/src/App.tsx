@@ -1,5 +1,16 @@
+import { Toaster } from "react-hot-toast";
+import { Route, Routes } from "react-router-dom";
+import AuthPage from "./pages/AuthPage";
+
 const App = () => {
-  return <div className="p-10">App</div>;
+  return (
+    <>
+      <Toaster />
+      <Routes>
+        <Route path="/auth/*" element={<AuthPage />} />
+      </Routes>
+    </>
+  );
 };
 
 export default App;
