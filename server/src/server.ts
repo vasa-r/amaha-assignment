@@ -4,8 +4,11 @@ import cors from "cors";
 import connectDb from "./config/connectDb";
 import { statusCode } from "./types/types";
 import errorHandler from "./middleware/errorHandler";
+import passport from "passport";
 
 dotenv.config();
+import "./config/passportConfig";
+import userRouter from "./routes/userRoute";
 
 const PORT = process.env.PORT || 3000;
 
@@ -13,6 +16,7 @@ const app: Application = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(passport.initialize());
 
 app.get("/ping", (_, res) => {
   res.json({
@@ -20,6 +24,8 @@ app.get("/ping", (_, res) => {
     message: "API up and running",
   });
 });
+
+app.use("/api/auth", userRouter);
 
 app.use("*", (_, res) => {
   res.status(statusCode.NOT_FOUND).json({
