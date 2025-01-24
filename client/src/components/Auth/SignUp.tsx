@@ -1,9 +1,12 @@
 import Google from "../../assets/google.png";
 import Logo from "../../assets/logo.svg";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import validateRegister from "../../validation/validateRegister";
 import { toast } from "react-hot-toast";
+import { useTheme } from "../../context/ThemeContext";
+import { registerUser } from "../../api/auth";
+import Loader from "../Loaders/Loader";
 
 interface Initialvalues {
   userName: string;
@@ -23,6 +26,9 @@ const SignUp = () => {
   const [credentials, setCredentials] = useState<Initialvalues>(initialValues);
   const [formErrors, setFormErrors] = useState<Partial<Initialvalues>>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  const { isDarkMode } = useTheme();
 
   const googleLogin = () => {
     window.open(
@@ -44,15 +50,35 @@ const SignUp = () => {
     if (Object.keys(errors).length === 0) {
       setIsLoading(true);
       try {
-        // await register();
+        await register();
       } catch (error) {
         console.log(error);
       } finally {
         setIsLoading(false);
-        setCredentials(initialValues);
       }
     } else {
       toast.error("Please ensure valid info is given");
+    }
+  };
+
+  const register = async () => {
+    try {
+      const response = await registerUser(
+        credentials.userName,
+        credentials.email,
+        credentials.password
+      );
+
+      if (response.success || response.status === 201) {
+        toast.success(response?.data?.message);
+        setCredentials(initialValues);
+        navigate("/auth/login");
+      } else {
+        toast.error(response?.data?.message || "Registration failed");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("An error occurred during Sign Up. Please try again later.");
     }
   };
 
@@ -74,7 +100,11 @@ const SignUp = () => {
       </div>
 
       <div className="relative w-96">
-        <div className="absolute px-2 text-base font-semibold -translate-x-1/2 bg-black left-1/2 -top-3">
+        <div
+          className={`absolute px-2 text-base font-semibold -translate-x-1/2 left-1/2 -top-3 ${
+            isDarkMode ? "bg-black" : "bg-white"
+          }`}
+        >
           OR
         </div>
         <div className="border-t-2"></div>
@@ -111,7 +141,7 @@ const SignUp = () => {
         <div className="">
           <label htmlFor="password">Password</label>
           <input
-            type="text"
+            type="password"
             id="password"
             name="password"
             value={credentials.password}
@@ -124,7 +154,7 @@ const SignUp = () => {
         <div className="">
           <label htmlFor="confirmPassword">Confirm Password</label>
           <input
-            type="text"
+            type="password"
             id="confirmPassword"
             name="confirmPassword"
             value={credentials.confirmPassword}
@@ -137,7 +167,7 @@ const SignUp = () => {
           </p>
         </div>
         <button disabled={isLoading} className="btn btn-primary" type="submit">
-          {isLoading ? "Signing... Wait" : "Sign Up"}
+          {isLoading ? <Loader width="24px" height="24px" /> : "Sign Up"}
         </button>
         <p className="text-sm text-center">
           Already have an acoount?{" "}

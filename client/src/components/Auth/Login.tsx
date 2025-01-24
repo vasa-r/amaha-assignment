@@ -4,7 +4,9 @@ import { ChangeEvent, FormEvent, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import validateLogin from "../../validation/validateLogin";
-// import { useAuth } from "../../context/AuthContext";
+import { useTheme } from "../../context/ThemeContext";
+import { loginUser } from "../../api/auth";
+import { useApp } from "../../context/AppContext";
 
 interface Initialvalues {
   email: string;
@@ -20,7 +22,9 @@ const Login = () => {
   const [formErrors, setFormErrors] = useState<Partial<Initialvalues>>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // const { loginContext, setToken } = useAuth();
+  const { isDarkMode } = useTheme();
+
+  const { loginContext, setToken } = useApp();
 
   const googleLogin = () => {
     window.open(
@@ -42,17 +46,33 @@ const Login = () => {
     if (Object.keys(errors).length === 0) {
       setIsLoading(true);
       try {
-        // await login();
-        console.log("login");
+        await login();
       } catch (error) {
         console.log(error);
         toast.error("Login failed, please try again.");
       } finally {
         setIsLoading(false);
-        setCredentials(initialValues);
       }
     } else {
       toast.error("Please ensure valid info is given");
+    }
+  };
+
+  const login = async () => {
+    try {
+      const response = await loginUser(credentials.email, credentials.password);
+      if (response.success || response.status === 202) {
+        toast.success(response?.data?.message);
+        localStorage.setItem("token", response?.data?.token);
+        setToken(response?.data?.token);
+        loginContext(response?.data?.token);
+        setCredentials(initialValues);
+      } else {
+        toast.error(response?.data?.message || "Login failed");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("An error occurred during login. Please try again later.");
     }
   };
 
@@ -74,7 +94,11 @@ const Login = () => {
       </div>
 
       <div className="relative w-96">
-        <div className="absolute px-2 text-base font-semibold -translate-x-1/2 bg-black left-1/2 -top-3">
+        <div
+          className={`absolute px-2 text-base font-semibold -translate-x-1/2 left-1/2 -top-3 ${
+            isDarkMode ? "bg-black" : "bg-white"
+          }`}
+        >
           OR
         </div>
         <div className="border-t-2"></div>
@@ -96,7 +120,7 @@ const Login = () => {
         <div className="">
           <label htmlFor="password">Password</label>
           <input
-            type="text"
+            type="password"
             id="password"
             name="password"
             value={credentials.password}

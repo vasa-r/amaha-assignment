@@ -8,17 +8,47 @@
 :root[data-theme="light"] {
   --background-color: white;
   --text-color: black;
+  --input-border-color: black;
+  --btn-color: white;
 }
 
 :root[data-theme="dark"] {
   --background-color: black;
   --text-color: white;
+  --input-border-color: rgb(255 255 255 / 0.2);
+  --btn-color: black;
 }
 
 body {
   background-color: var(--background-color);
   color: var(--text-color);
   transition: background-color 0.3s, color 0.3s;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="password"],
+select {
+  width: 100%;
+  padding: 0.5rem;
+  background-color: transparent;
+  border: 2px solid var(--input-border-color);
+  border-radius: 0.5rem;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+label {
+  display: block;
+  margin: 4px 0;
+  font-size: 1rem /* 16px */;
+  line-height: 1.5rem /* 24px */;
+  color: var(--text-color);
+}
+
+.btn {
+  color: var(--btn-color);
 }
 
 .btn {
@@ -77,18 +107,6 @@ hr {
 
 .card {
   @apply min-w-[350px] bg-white/5 rounded-xl p-5 border border-white/10 backdrop-blur-md;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="date"],
-input[type="password"],
-select {
-  @apply w-full px-2 py-2 bg-transparent border-2 rounded-lg outline-none border-white/20;
-}
-
-form label {
-  @apply block my-1 text-base text-white;
 }
 
 .form-group {

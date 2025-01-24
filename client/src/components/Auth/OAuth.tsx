@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "../../context/AppContext";
+import { useApp } from "../../context/AppContext";
 
 const OAuth = () => {
   const navigate = useNavigate();
   const [params] = useSearchParams();
-  const { loginContext } = useAuth();
+  const { loginContext } = useApp();
 
   useEffect(() => {
     const token = params.get("token");

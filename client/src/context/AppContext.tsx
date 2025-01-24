@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import {
   createContext,
   ReactNode,
@@ -26,14 +27,6 @@ interface AppProviderProps {
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
-
-export const useAuth = () => {
-  const context = useContext(AppContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
 
 const AppProvider = ({ children }: AppProviderProps) => {
   const initialData = window.localStorage.getItem("token") || null;
@@ -78,6 +71,14 @@ const AppProvider = ({ children }: AppProviderProps) => {
   };
 
   return <AppContext.Provider value={values}>{children}</AppContext.Provider>;
+};
+
+export const useApp = () => {
+  const context = useContext(AppContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };
 
 export default AppProvider;
