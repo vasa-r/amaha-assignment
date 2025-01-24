@@ -30,6 +30,6 @@ userRouter.get("/", getUsers);
 
 userRouter.post("/signup", createUser);
 
-userRouter.post("login", loginUser);
+userRouter.post("/login", loginUser);
 
 export default userRouter;

@@ -36,7 +36,7 @@ const getUsers = async (req: Request, res: Response) => {
 const createUser = async (req: Request, res: Response) => {
   const { userName, email, password } = req.body;
   try {
-    const isUserExists = await User.find({ email: email });
+    const isUserExists = await User.findOne({ email });
 
     if (isUserExists) {
       res.status(statusCode.CONFLICT).json({
@@ -61,6 +61,11 @@ const createUser = async (req: Request, res: Response) => {
       });
       return;
     }
+
+    res.status(statusCode.OK).json({
+      success: true,
+      message: "Account created successfully. Please Login",
+    });
   } catch (error) {
     console.log(error);
     res.status(statusCode.SERVER_ERROR).json({
