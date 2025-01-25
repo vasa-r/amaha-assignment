@@ -6,6 +6,7 @@ import LightDelete from "../../assets/light/light-delete.svg";
 import { useCallback, useState } from "react";
 import { Link } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
+import CreateBoard from "./CreateBoard";
 
 const Home = () => {
   const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
@@ -32,6 +33,9 @@ const Home = () => {
 
   return (
     <>
+      {showCreateModal && (
+        <CreateBoard open={showCreateModal} setOpen={setShowCreateModal} />
+      )}
       <div className="flex flex-col flex-1 gap-4 px-6 py-4 overflow-y-auto md:overflow-hidden md:py-7 md:gap-6">
         <div>
           <h1 className="text-xl font-semibold md:text-3xl md:font-bold">

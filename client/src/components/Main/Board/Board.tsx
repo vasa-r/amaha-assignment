@@ -14,12 +14,13 @@ const Board = () => {
       >
         <Header />
         <div
-          className={`flex flex-col flex-1 w-full gap-2 p-1 mt-2 overflow-x-auto overflow-y-hidden rounded-md md:flex-row ${
+          className={`flex flex-col flex-1 w-full gap-2 p-1 mt-2 overflow-x-auto md:overflow-y-hidden rounded-md md:flex-row ${
             isDarkMode ? "bg-black" : "bg-white"
           }`}
         >
+          {/* column */}
           <div
-            className={`flex-1 rounded-md p-2 flex flex-col min-w-72 max-w-72 overflow-x-auto ${
+            className={`flex-1 rounded-md p-2 flex flex-col w-full md:min-w-72 md:max-w-72 md:overflow-x-auto ${
               isDarkMode ? "bg-main-bg" : "bg-light-col"
             }`}
           >

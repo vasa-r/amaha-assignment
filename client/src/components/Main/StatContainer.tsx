@@ -12,8 +12,10 @@ const StatContainer = ({ first, second, third }: StatProps) => {
     <div className="w-full flex flex-col gap-3 md:grid md:grid-cols-3 md:gap-[50px]">
       <div
         className={`flex items-center justify-center h-32 rounded-md ${
-          isDarkMode ? " border border-[#1E201E]" : "shadow-custom"
-        } hover:bg-main-bg`}
+          isDarkMode
+            ? " border border-[#1E201E] hover:bg-dark-hover"
+            : "shadow-custom hover:bg-light-hover"
+        }`}
       >
         <h1 className="text-2xl font-medium text-center">
           <span className="text-3xl">{first} </span>
@@ -21,9 +23,12 @@ const StatContainer = ({ first, second, third }: StatProps) => {
         </h1>
       </div>
       <div
+        // isDarkMode ? "hover:bg-dark-hover" : "hover:bg-light-hover"
         className={`flex items-center justify-center h-32 rounded-md ${
-          isDarkMode ? " border border-[#1E201E]" : "shadow-custom"
-        } hover:bg-main-bg`}
+          isDarkMode
+            ? " border border-[#1E201E] hover:bg-dark-hover"
+            : "shadow-custom hover:bg-light-hover"
+        }`}
       >
         <h1 className="text-2xl font-medium text-center">
           <span className="text-3xl">{second} </span>
@@ -33,8 +38,10 @@ const StatContainer = ({ first, second, third }: StatProps) => {
       </div>
       <div
         className={`flex items-center justify-center h-32 rounded-md ${
-          isDarkMode ? " border border-[#1E201E]" : "shadow-custom"
-        } hover:bg-main-bg`}
+          isDarkMode
+            ? " border border-[#1E201E] hover:bg-dark-hover"
+            : "shadow-custom hover:bg-light-hover"
+        }`}
       >
         <h1 className="text-2xl font-medium text-center">
           <span className="text-3xl">{third} </span> <br /> Total Tasks
