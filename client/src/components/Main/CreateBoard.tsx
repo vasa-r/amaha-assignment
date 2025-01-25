@@ -2,6 +2,8 @@ import { Dispatch, FormEvent, SetStateAction, useState } from "react";
 import Modal from "../UtilsUI/Modal";
 import Input from "../UtilsUI/Input";
 import Loader from "../Loaders/Loader";
+import { createBoard } from "../../api/board";
+import toast from "react-hot-toast";
 
 interface Prop {
   open: boolean;
@@ -13,7 +15,7 @@ const CreateBoard = ({ open, setOpen }: Prop) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     try {
@@ -21,11 +23,33 @@ const CreateBoard = ({ open, setOpen }: Prop) => {
         setError("Please give board name");
         return;
       }
-      console.log("submitted");
+      await newBoard();
     } catch (error) {
       console.log(error);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const newBoard = async () => {
+    try {
+      const response = await createBoard(boardName);
+
+      if (response.success || response.status === 201) {
+        toast.success(response?.data?.message);
+        setBoardName("");
+        setOpen(false);
+      } else {
+        toast.error(
+          response?.data?.message ||
+            "Couldn't create board. Please try again later"
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        "An error occurred during creating board. Please try again later."
+      );
     }
   };
 
