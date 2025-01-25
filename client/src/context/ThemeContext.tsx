@@ -30,6 +30,7 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
       setIsDarkMode(systemPrefersDark ? true : false);
     } else {
       root.setAttribute("data-theme", theme);
+      setIsDarkMode(theme === "dark");
     }
 
     localStorage.setItem("theme", theme);
