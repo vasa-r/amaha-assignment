@@ -41,4 +41,25 @@ const deleteColumn = async (columnId: string) => {
   }
 };
 
-export { createColumn, deleteColumn };
+const updateColumn = async (columnId: string, columnName: string) => {
+  try {
+    const response = await apiClient.patch(`/column/${columnId}`, {
+      columnName,
+    });
+
+    return {
+      success: true,
+      data: response.data,
+      status: response.status,
+    };
+  } catch (error) {
+    const err = error as AxiosError;
+    return {
+      success: false,
+      data: err.response?.data || "An error occurred",
+      status: err.response?.status || 500,
+    };
+  }
+};
+
+export { createColumn, deleteColumn, updateColumn };

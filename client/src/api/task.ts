@@ -1,5 +1,6 @@
 import { AxiosError } from "axios";
 import apiClient from "./axiosConfig";
+import { Task } from "../lib/types";
 
 const createTask = async (
   taskName: string,
@@ -50,4 +51,23 @@ const deleteTask = async (taskId: string) => {
   }
 };
 
-export { createTask, deleteTask };
+const updateTask = async (taskId: string, updateData: Partial<Task>) => {
+  try {
+    const response = await apiClient.patch(`/task/${taskId}`, updateData);
+
+    return {
+      success: true,
+      data: response.data,
+      status: response.status,
+    };
+  } catch (error) {
+    const err = error as AxiosError;
+    return {
+      success: false,
+      data: err.response?.data || "An error occurred",
+      status: err.response?.status || 500,
+    };
+  }
+};
+
+export { createTask, deleteTask, updateTask };

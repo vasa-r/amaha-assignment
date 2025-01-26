@@ -10,35 +10,44 @@ import Input from "../UtilsUI/Input";
 import Loader from "../Loaders/Loader";
 import validateNewTask, { TaskError } from "../../validation/validateTask";
 import toast from "react-hot-toast";
-import { createTask } from "../../api/task";
+import { createTask, updateTask } from "../../api/task";
+import { Task } from "../../lib/types";
 
 interface Prop {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
-  columnId: string;
-  refresh: Dispatch<SetStateAction<boolean>>;
+  columnId?: string;
+  refresh?: Dispatch<SetStateAction<boolean>>;
+  taskId?: string;
+  updateData?: Partial<Task>;
 }
 
 export interface TaskType {
-  taskName: string;
-  taskDesc: string;
-  dueDate: string;
-  priority: "low" | "medium" | "high";
+  taskName?: string;
+  taskDesc?: string;
+  dueDate?: string;
+  priority?: "low" | "medium" | "high";
 }
 
-const initialValues: TaskType = {
-  taskName: "",
-  taskDesc: "",
-  dueDate: "",
-  priority: "low",
-};
-
-const AddTask = ({ open, setOpen, columnId, refresh }: Prop) => {
+const AddTask = ({
+  open,
+  setOpen,
+  columnId,
+  refresh,
+  taskId,
+  updateData,
+}: Prop) => {
+  const initialValues = {
+    taskName: updateData ? updateData.taskName! : "",
+    taskDesc: updateData ? updateData.taskDesc! : "",
+    dueDate: updateData ? updateData.dueDate! : "",
+    priority: updateData
+      ? (updateData.priority! as "low" | "medium" | "high")
+      : "low",
+  };
   const [taskDetails, setTaskDetails] = useState<TaskType>(initialValues);
   const [taskErrors, setTaskErrors] = useState<Partial<TaskError>>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  console.log(columnId);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -54,7 +63,11 @@ const AddTask = ({ open, setOpen, columnId, refresh }: Prop) => {
     if (Object.keys(errors).length === 0) {
       setIsLoading(true);
       try {
-        await newTask();
+        if (taskId) {
+          await changeTaskDetails();
+        } else {
+          await newTask();
+        }
       } catch (error) {
         console.log(error);
         toast.error("Couldn't create task, please try again.");
@@ -69,16 +82,16 @@ const AddTask = ({ open, setOpen, columnId, refresh }: Prop) => {
   const newTask = async () => {
     try {
       const response = await createTask(
-        taskDetails.taskName,
-        taskDetails.taskDesc,
-        taskDetails.dueDate,
-        taskDetails.priority,
-        columnId
+        taskDetails.taskName!,
+        taskDetails.taskDesc!,
+        taskDetails.dueDate!,
+        taskDetails.priority!,
+        columnId!
       );
 
       if (response.success || response.status === 201) {
         toast.success(response?.data?.message);
-        refresh(true);
+        if (refresh) refresh(true);
         setTaskDetails(initialValues);
         setOpen(false);
       } else {
@@ -95,17 +108,45 @@ const AddTask = ({ open, setOpen, columnId, refresh }: Prop) => {
     }
   };
 
+  const changeTaskDetails = async () => {
+    setIsLoading(true);
+    try {
+      const response = await updateTask(taskId!, taskDetails);
+
+      if (response.success || response.status === 201) {
+        toast.success(response?.data?.message);
+        setTaskDetails(initialValues);
+        if (refresh) refresh(true);
+        setOpen(false);
+      } else {
+        toast.error(
+          response?.data?.message ||
+            "Couldn't update task. Please try again later"
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        "An error occurred during updating task. Please try again later."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Modal open={open} setOpen={setOpen}>
       <form className="flex flex-col w-full gap-4" onSubmit={handleSubmit}>
-        <h1 className="text-2xl font-semibold">Add New Task</h1>
+        <h1 className="text-2xl font-semibold">
+          {taskId ? "Update task" : "Add New Task"}
+        </h1>
         <div>
           <Input
             name="taskName"
             label="Task Name"
             type="text"
             placeholder="Enter task name"
-            value={taskDetails.taskName}
+            value={taskDetails.taskName!}
             onChange={handleChange}
           />
           {!taskDetails.taskName && (
@@ -119,7 +160,7 @@ const AddTask = ({ open, setOpen, columnId, refresh }: Prop) => {
             label="Description"
             type="text"
             placeholder="Enter task description"
-            value={taskDetails.taskDesc}
+            value={taskDetails.taskDesc!}
             onChange={handleChange}
           />
           {!taskDetails.taskDesc && (
@@ -133,7 +174,7 @@ const AddTask = ({ open, setOpen, columnId, refresh }: Prop) => {
             label="Due Date"
             type="date"
             placeholder="Pick due date"
-            value={taskDetails.dueDate}
+            value={taskDetails.dueDate!}
             onChange={handleChange}
           />
           {!taskDetails.dueDate && (
@@ -163,7 +204,13 @@ const AddTask = ({ open, setOpen, columnId, refresh }: Prop) => {
           type="submit"
           className="!text-white bg-green-400 btn relative left-1/2 -translate-x-1/2"
         >
-          {isLoading ? <Loader height="24px" width="24px" /> : "Add Task"}
+          {isLoading ? (
+            <Loader height="24px" width="24px" />
+          ) : taskId ? (
+            "Update Task"
+          ) : (
+            "Add Task"
+          )}
         </button>
       </form>
     </Modal>

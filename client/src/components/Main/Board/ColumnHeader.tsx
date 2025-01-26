@@ -7,6 +7,7 @@ import AddTask from "../AddTask";
 import { deleteColumn } from "../../../api/column";
 import toast from "react-hot-toast";
 import ConfirmDelete from "../ConfirmDelete";
+import AddColumn from "../AddColumn";
 
 interface ColHeaderProp {
   isDarkMode: boolean;
@@ -24,6 +25,7 @@ const ColumnHeader = ({
   const [showAddTask, setShowAddTask] = useState<boolean>(false);
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleDeleteColumn = async () => {
@@ -59,6 +61,14 @@ const ColumnHeader = ({
           setOpen={setShowAddTask}
           columnId={columnId}
           refresh={refresh}
+        />
+      )}
+      {showEditModal && (
+        <AddColumn
+          open={showEditModal}
+          setOpen={setShowEditModal}
+          refresh={refresh}
+          columnId={columnId}
         />
       )}
       {showDeleteModal && (
@@ -120,6 +130,7 @@ const ColumnHeader = ({
                 className={`py-[2px] text-sm px-1 rounded-sm cursor-pointer ${
                   isDarkMode ? "hover:bg-dark-hover" : "hover:bg-light-hover"
                 }`}
+                onClick={() => setShowEditModal(true)}
               >
                 Edit column
               </p>

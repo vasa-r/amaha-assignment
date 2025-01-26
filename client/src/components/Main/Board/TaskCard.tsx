@@ -9,6 +9,7 @@ import { Task } from "../../../lib/types";
 import { deleteTask } from "../../../api/task";
 import toast from "react-hot-toast";
 import ConfirmDelete from "../ConfirmDelete";
+import AddTask, { TaskType } from "../AddTask";
 
 const TaskCard = ({
   taskName,
@@ -18,9 +19,16 @@ const TaskCard = ({
   _id,
   refresh,
 }: Partial<Task>) => {
+  const updateData: TaskType = {
+    taskName: taskName,
+    taskDesc: taskDesc,
+    priority: priority,
+    dueDate: dueDate,
+  };
   const [showOptions, setShowOptions] = useState<boolean>(false);
   const [showAutoComplete, setShowAutoComplete] = useState<boolean>(false);
   const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { isDarkMode } = useTheme();
 
@@ -50,6 +58,15 @@ const TaskCard = ({
   };
   return (
     <>
+      {showEditModal && (
+        <AddTask
+          open={showEditModal}
+          setOpen={setShowEditModal}
+          taskId={_id}
+          refresh={refresh}
+          updateData={updateData}
+        />
+      )}
       {showDeleteModal && (
         <ConfirmDelete
           open={showDeleteModal}
@@ -78,6 +95,7 @@ const TaskCard = ({
               className={`py-[2px] text-sm px-1 rounded-sm cursor-pointer ${
                 isDarkMode ? "hover:bg-dark-hover" : "hover:bg-light-hover"
               }`}
+              onClick={() => setShowEditModal(true)}
             >
               Edit Task
             </p>
