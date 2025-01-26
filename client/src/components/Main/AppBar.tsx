@@ -36,7 +36,9 @@ const AppBar = () => {
         />
         <Link to="/" className="flex items-center self-start gap-2">
           <img src={Logo} alt="app logo" className="size-8 animate-spin" />{" "}
-          <p className="!text-xl !font-semibold !p-0 heading">ProfitPal</p>
+          <p className="!text-xl !font-semibold !p-0 heading gradient-txt">
+            TaskFlow
+          </p>
         </Link>
       </div>
 
