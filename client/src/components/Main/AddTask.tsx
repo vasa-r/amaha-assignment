@@ -10,6 +10,7 @@ import Input from "../UtilsUI/Input";
 import Loader from "../Loaders/Loader";
 import validateNewTask, { TaskError } from "../../validation/validateTask";
 import toast from "react-hot-toast";
+import { createTask } from "../../api/task";
 
 interface Prop {
   open: boolean;
@@ -42,14 +43,14 @@ const AddTask = ({ open, setOpen }: Prop) => {
     setTaskDetails((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const errors = validateNewTask(taskDetails);
     setTaskErrors(errors);
     if (Object.keys(errors).length === 0) {
       setIsLoading(true);
       try {
-        console.log("submitted");
+        await newTask();
       } catch (error) {
         console.log(error);
         toast.error("Couldn't create task, please try again.");
@@ -58,6 +59,33 @@ const AddTask = ({ open, setOpen }: Prop) => {
       }
     } else {
       toast.error("Please give valid info");
+    }
+  };
+
+  const newTask = async () => {
+    try {
+      const response = await createTask(
+        taskDetails.taskName,
+        taskDetails.taskDesc,
+        taskDetails.dueDate,
+        taskDetails.priority
+      );
+
+      if (response.success || response.status === 201) {
+        toast.success(response?.data?.message);
+        setTaskDetails(initialValues);
+        setOpen(false);
+      } else {
+        toast.error(
+          response?.data?.message ||
+            "Couldn't create task. Please try again later"
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        "An error occurred during creating task. Please try again later."
+      );
     }
   };
 
