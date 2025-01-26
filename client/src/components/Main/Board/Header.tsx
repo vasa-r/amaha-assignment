@@ -14,7 +14,13 @@ import AddColumn from "../AddColumn";
 import AutoComplete from "../AutoComplete";
 import { Link } from "react-router-dom";
 
-const Header = ({ boardId }: { boardId: string }) => {
+interface HeaderProp {
+  boardId: string;
+  boardName: string;
+  refresh: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+const Header = ({ boardId, boardName, refresh }: HeaderProp) => {
   const [showAddColumn, setShowAddColumn] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [showSearchUser, setShowSearchUser] = useState<boolean>(false);
@@ -27,6 +33,7 @@ const Header = ({ boardId }: { boardId: string }) => {
           open={showAddColumn}
           setOpen={setShowAddColumn}
           boardId={boardId}
+          refresh={refresh}
         />
       )}
       {showSearchUser && (
@@ -54,7 +61,7 @@ const Header = ({ boardId }: { boardId: string }) => {
             </Link>
 
             <h1 className="text-base font-semibold md:font-bold md:text-4xl">
-              Board Title
+              {boardName}
             </h1>
           </div>
 

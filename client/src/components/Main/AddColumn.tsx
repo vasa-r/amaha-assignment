@@ -9,9 +9,10 @@ interface Prop {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
   boardId: string;
+  refresh: Dispatch<SetStateAction<boolean>>;
 }
 
-const AddColumn = ({ open, setOpen, boardId }: Prop) => {
+const AddColumn = ({ open, setOpen, boardId, refresh }: Prop) => {
   const [columnName, setColumnName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState("");
@@ -38,6 +39,7 @@ const AddColumn = ({ open, setOpen, boardId }: Prop) => {
 
       if (response.success || response.status === 201) {
         toast.success(response?.data?.message);
+        refresh(true);
         setColumnName("");
         setOpen(false);
       } else {

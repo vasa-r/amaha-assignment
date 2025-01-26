@@ -20,6 +20,25 @@ const getBoards = async () => {
   }
 };
 
+const getBoard = async (boardId: string) => {
+  try {
+    const response = await apiClient.get(`/board/${boardId}`);
+
+    return {
+      success: true,
+      data: response.data,
+      status: response.status,
+    };
+  } catch (error) {
+    const err = error as AxiosError;
+    return {
+      success: false,
+      data: err.response?.data || "An error occurred",
+      status: err.response?.status || 500,
+    };
+  }
+};
+
 const createBoard = async (boardName: string) => {
   try {
     const response = await apiClient.post("/board/create", { boardName });
@@ -58,4 +77,4 @@ const deleteBoard = async (id: string) => {
   }
 };
 
-export { getBoards, createBoard, deleteBoard };
+export { getBoards, getBoard, createBoard, deleteBoard };

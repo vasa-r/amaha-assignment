@@ -6,7 +6,7 @@ const createTask = async (
   taskDesc: string,
   dueDate: string,
   priority: string,
-  columnId: string = "679583bc2c454d313779d969"
+  columnId: string
 ) => {
   try {
     const response = await apiClient.post(`/task/create/${columnId}`, {
@@ -31,4 +31,23 @@ const createTask = async (
   }
 };
 
-export { createTask };
+const deleteTask = async (taskId: string) => {
+  try {
+    const response = await apiClient.delete(`/task/delete/${taskId}`);
+
+    return {
+      success: true,
+      data: response.data,
+      status: response.status,
+    };
+  } catch (error) {
+    const err = error as AxiosError;
+    return {
+      success: false,
+      data: err.response?.data || "An error occurred",
+      status: err.response?.status || 500,
+    };
+  }
+};
+
+export { createTask, deleteTask };

@@ -15,6 +15,8 @@ import { createTask } from "../../api/task";
 interface Prop {
   open: boolean;
   setOpen: Dispatch<SetStateAction<boolean>>;
+  columnId: string;
+  refresh: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface TaskType {
@@ -31,10 +33,12 @@ const initialValues: TaskType = {
   priority: "low",
 };
 
-const AddTask = ({ open, setOpen }: Prop) => {
+const AddTask = ({ open, setOpen, columnId, refresh }: Prop) => {
   const [taskDetails, setTaskDetails] = useState<TaskType>(initialValues);
   const [taskErrors, setTaskErrors] = useState<Partial<TaskError>>({});
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  console.log(columnId);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -68,11 +72,13 @@ const AddTask = ({ open, setOpen }: Prop) => {
         taskDetails.taskName,
         taskDetails.taskDesc,
         taskDetails.dueDate,
-        taskDetails.priority
+        taskDetails.priority,
+        columnId
       );
 
       if (response.success || response.status === 201) {
         toast.success(response?.data?.message);
+        refresh(true);
         setTaskDetails(initialValues);
         setOpen(false);
       } else {

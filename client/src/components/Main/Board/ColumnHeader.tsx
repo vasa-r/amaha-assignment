@@ -1,16 +1,74 @@
-import { useState } from "react";
+import React, { SetStateAction, useState } from "react";
 import DarkAdd from "../../../assets/dark/dark-column.svg";
 import DarkOption from "../../../assets/dark/dark-option.svg";
 import LightAdd from "../../../assets/light/light-column.svg";
 import LightOption from "../../../assets/light/light-option.svg";
 import AddTask from "../AddTask";
+import { deleteColumn } from "../../../api/column";
+import toast from "react-hot-toast";
+import ConfirmDelete from "../ConfirmDelete";
 
-const ColumnHeader = ({ isDarkMode }: { isDarkMode: boolean }) => {
+interface ColHeaderProp {
+  isDarkMode: boolean;
+  columnName: string;
+  columnId: string;
+  refresh: React.Dispatch<SetStateAction<boolean>>;
+}
+
+const ColumnHeader = ({
+  isDarkMode,
+  columnName,
+  columnId,
+  refresh,
+}: ColHeaderProp) => {
   const [showAddTask, setShowAddTask] = useState<boolean>(false);
   const [showOptions, setShowOptions] = useState<boolean>(false);
+  const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleDeleteColumn = async () => {
+    setIsLoading(true);
+    try {
+      const response = await deleteColumn(columnId!);
+
+      if (response.success || response.status === 200) {
+        toast.success(response?.data?.message);
+        setIsLoading(false);
+      } else {
+        toast.error(
+          response?.data?.message ||
+            "Couldn't delete Board data. Please try again later"
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        "An error occurred during deleting board. Please try again later."
+      );
+    } finally {
+      setIsLoading(false);
+      refresh(true);
+    }
+  };
+
   return (
     <>
-      {showAddTask && <AddTask open={showAddTask} setOpen={setShowAddTask} />}
+      {showAddTask && (
+        <AddTask
+          open={showAddTask}
+          setOpen={setShowAddTask}
+          columnId={columnId}
+          refresh={refresh}
+        />
+      )}
+      {showDeleteModal && (
+        <ConfirmDelete
+          open={showDeleteModal}
+          setOpen={setShowDeleteModal}
+          isLoading={isLoading}
+          onPress={() => handleDeleteColumn()}
+        />
+      )}
       <div
         className={`rounded-md p-2 ${
           isDarkMode ? "bg-main-bg" : "bg-light-col"
@@ -22,7 +80,7 @@ const ColumnHeader = ({ isDarkMode }: { isDarkMode: boolean }) => {
           }`}
         >
           <div className="flex items-center gap-2">
-            <p className="text-xs font-medium md:text-base">Add New Column</p>
+            <p className="text-sm font-bold md:text-lg">{columnName}</p>
             <div
               className={`p-1 rounded-lg cursor-pointer ${
                 isDarkMode ? "hover:bg-dark-hover" : "hover:bg-light-hover"
@@ -69,6 +127,7 @@ const ColumnHeader = ({ isDarkMode }: { isDarkMode: boolean }) => {
                 className={`py-[2px] text-sm px-1 rounded-sm cursor-pointer ${
                   isDarkMode ? "hover:bg-dark-hover" : "hover:bg-light-hover"
                 }`}
+                onClick={() => setShowDeleteModal(true)}
               >
                 Delete Column
               </p>
