@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { statusCode } from "../types/types";
 import Task from "../models/taskModel";
 import Column from "../models/columnModel";
+import mongoose from "mongoose";
 
 const createTask = async (req: Request, res: Response) => {
   const { columnId } = req.params;
@@ -119,4 +120,60 @@ const updateTask = async (req: Request, res: Response) => {
   }
 };
 
-export { createTask, updateTask, deleteTask };
+const assignMembersToTask = async (req: Request, res: Response) => {
+  try {
+    const { taskId } = req.params;
+    const { memberIds } = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(taskId)) {
+      res.status(400).json({
+        success: false,
+        message: "Invalid task ID",
+      });
+      return;
+    }
+
+    const task = await Task.findById(taskId);
+    if (!task) {
+      res.status(404).json({
+        success: false,
+        message: "Task not found",
+      });
+      return;
+    }
+
+    if (
+      !Array.isArray(memberIds) ||
+      !memberIds.every((id) => mongoose.Types.ObjectId.isValid(id))
+    ) {
+      res.status(400).json({
+        success: false,
+        message: "Invalid user IDs",
+      });
+      return;
+    }
+
+    const uniqueUserIds = memberIds.filter(
+      (id) => !task.assignedUsers.includes(id)
+    );
+
+    task.assignedUsers.push(...uniqueUserIds);
+
+    await task.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Users assigned to task successfully",
+      data: task,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message:
+        "An error occurred while assigning members to the task. Please try again later.",
+    });
+  }
+};
+
+export { createTask, updateTask, deleteTask, assignMembersToTask };

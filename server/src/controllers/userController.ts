@@ -9,12 +9,18 @@ import {
 
 const getUsers = async (req: Request, res: Response) => {
   try {
-    const users = await User.find({}).lean();
+    const { query } = req.query;
+
+    const searchCondition = query
+      ? { userName: { $regex: query, $options: "i" } }
+      : {};
+
+    const users = await User.find(searchCondition).lean();
 
     if (!users || users.length === 0) {
       res.status(statusCode.NOT_FOUND).json({
         success: false,
-        message: "No users available",
+        message: "No users found",
       });
       return;
     }
@@ -25,10 +31,10 @@ const getUsers = async (req: Request, res: Response) => {
       data: users,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(statusCode.SERVER_ERROR).json({
       success: false,
-      message: "Could not fetch users. Try again later ",
+      message: "Could not fetch users. Try again later.",
     });
   }
 };

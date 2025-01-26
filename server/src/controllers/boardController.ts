@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { CustomUserReq, statusCode } from "../types/types";
 import Board from "../models/boardModel";
 import getBoardDetails from "../lib/getBoardDetails";
+import mongoose from "mongoose";
 
 const getBoards = async (req: CustomUserReq, res: Response) => {
   const { userId } = req;
@@ -123,4 +124,52 @@ const deleteBoard = async (req: Request, res: Response) => {
   }
 };
 
-export { getBoards, getBoard, createBoard, deleteBoard };
+const addMembersToBoard = async (req: Request, res: Response) => {
+  try {
+    const { boardId } = req.params;
+    const { memberIds } = req.body;
+
+    const board = await Board.findById(boardId);
+    if (!board) {
+      res.status(404).json({
+        success: false,
+        message: "Board not found",
+      });
+      return;
+    }
+
+    if (
+      !Array.isArray(memberIds) ||
+      !memberIds.every((id) => mongoose.Types.ObjectId.isValid(id))
+    ) {
+      res.status(400).json({
+        success: false,
+        message: "Invalid member IDs",
+      });
+      return;
+    }
+
+    const uniqueMemberIds = memberIds.filter(
+      (id) => !board.members.includes(id)
+    );
+
+    board.members.push(...uniqueMemberIds);
+
+    await board.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Members added successfully",
+      data: board,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Could not add members. Please try again later.",
+    });
+    return;
+  }
+};
+
+export { getBoards, getBoard, createBoard, deleteBoard, addMembersToBoard };

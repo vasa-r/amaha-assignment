@@ -2,6 +2,7 @@ import { Response, Router } from "express";
 import passport from "passport";
 import { getUsers, createUser, loginUser } from "../controllers/userController";
 import { generateToken } from "../lib/utils";
+import verifyToken from "../middleware/verifyToken";
 
 const userRouter = Router();
 
@@ -26,7 +27,7 @@ userRouter.get(
   }
 );
 
-userRouter.get("/", getUsers);
+userRouter.get("/", verifyToken, getUsers);
 
 userRouter.post("/signup", createUser);
 
