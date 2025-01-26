@@ -1,17 +1,19 @@
 import { Router } from "express";
-import verifyToken from "../middleware/verifyToken";
 import {
   createBoard,
   deleteBoard,
   getBoards,
+  getBoard,
 } from "../controllers/boardController";
 
 const boardRouter = Router();
 
-boardRouter.get("/", verifyToken, getBoards);
+boardRouter.get("/", getBoards);
 
-boardRouter.post("/create", verifyToken, createBoard);
+boardRouter.get("/:boardId", getBoard);
 
-boardRouter.delete("/:id", verifyToken, deleteBoard);
+boardRouter.post("/create", createBoard);
+
+boardRouter.delete("/:id", deleteBoard);
 
 export default boardRouter;

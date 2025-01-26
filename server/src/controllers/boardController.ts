@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { CustomUserReq, statusCode } from "../types/types";
 import Board from "../models/boardModel";
+import getBoardDetails from "../lib/getBoardDetails";
 
 const getBoards = async (req: CustomUserReq, res: Response) => {
   const { userId } = req;
@@ -25,6 +26,42 @@ const getBoards = async (req: CustomUserReq, res: Response) => {
     res.status(statusCode.SERVER_ERROR).json({
       success: false,
       message: "An error occurred during fetching. Try later",
+    });
+  }
+};
+
+const getBoard = async (req: Request, res: Response) => {
+  const { boardId } = req.params;
+
+  try {
+    if (!boardId || boardId.trim() === "") {
+      res.status(statusCode.NO_CONTENT).json({
+        success: false,
+        message: "Please provide valid ID",
+      });
+      return;
+    }
+
+    const boardDetails = await getBoardDetails(boardId);
+
+    if (!boardDetails || boardDetails.length === 0) {
+      res.status(statusCode.NOT_FOUND).json({
+        success: false,
+        message: "No Boards available",
+      });
+      return;
+    }
+
+    res.status(statusCode.OK).json({
+      success: true,
+      message: "Board fetched successfully",
+      boardDetails,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(statusCode.SERVER_ERROR).json({
+      success: false,
+      message: "Could get board. Try again later ",
     });
   }
 };
@@ -54,7 +91,7 @@ const createBoard = async (req: CustomUserReq, res: Response) => {
     console.log(error);
     res.status(statusCode.SERVER_ERROR).json({
       success: false,
-      message: "Could not Signup. Try again later ",
+      message: "Could not create. Try again later ",
     });
   }
 };
@@ -86,4 +123,4 @@ const deleteBoard = async (req: Request, res: Response) => {
   }
 };
 
-export { getBoards, createBoard, deleteBoard };
+export { getBoards, getBoard, createBoard, deleteBoard };

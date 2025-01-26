@@ -30,7 +30,7 @@ app.get("/ping", (_, res) => {
 });
 
 app.use("/api/auth", userRouter);
-app.use("/api/board", boardRouter);
+app.use("/api/board", verifyToken, boardRouter);
 app.use("/api/column", verifyToken, columnRouter);
 app.use("/api/task", verifyToken, taskRouter);
 
