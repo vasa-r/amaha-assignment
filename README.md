@@ -64,5 +64,5 @@
 
 ## Live Deployment
 
-- **Frontend**: [Vercel URL]()
-- **Backend**: [Render]()
+- **Frontend**: [Vercel URL](https://amaha-assignment-xi.vercel.app/)
+- **Backend**: [Render](https://amaha-assignment.onrender.com/)

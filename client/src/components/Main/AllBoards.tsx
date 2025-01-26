@@ -35,7 +35,7 @@ const AllBoards = () => {
             isDarkMode ? " border border-[#1E201E]" : "shadow-custom"
           }`}
         >
-          {boards.length > 0 ? (
+          {boards?.length > 0 ? (
             <table className="w-full table-auto">
               <thead className="text-xl">
                 <tr>
