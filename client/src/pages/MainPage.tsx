@@ -15,7 +15,7 @@ const MainPage = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/boards" element={<AllBoards />} />
-          <Route path="/boards/:id" element={<Board />} />
+          <Route path="/boards/:boardId" element={<Board />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="*" element={<Navigate to="/main" />} />
         </Routes>

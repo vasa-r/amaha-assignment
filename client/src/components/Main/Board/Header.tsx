@@ -14,7 +14,7 @@ import AddColumn from "../AddColumn";
 import AutoComplete from "../AutoComplete";
 import { Link } from "react-router-dom";
 
-const Header = () => {
+const Header = ({ boardId }: { boardId: string }) => {
   const [showAddColumn, setShowAddColumn] = useState<boolean>(false);
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [showSearchUser, setShowSearchUser] = useState<boolean>(false);
@@ -23,7 +23,11 @@ const Header = () => {
   return (
     <>
       {showAddColumn && (
-        <AddColumn open={showAddColumn} setOpen={setShowAddColumn} />
+        <AddColumn
+          open={showAddColumn}
+          setOpen={setShowAddColumn}
+          boardId={boardId}
+        />
       )}
       {showSearchUser && (
         <AutoComplete open={showSearchUser} setOpen={setShowSearchUser} />
