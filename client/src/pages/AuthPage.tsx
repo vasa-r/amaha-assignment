@@ -10,7 +10,7 @@ const AuthPage = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
         <Route path="/oauth" element={<OAuth />} />
-        <Route path="*" element={<Login />} />
+        <Route path="*" element={<SignUp />} />
       </Routes>
     </div>
   );
