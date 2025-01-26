@@ -9,6 +9,10 @@ import passport from "passport";
 dotenv.config();
 import "./config/passportConfig";
 import userRouter from "./routes/userRoute";
+import boardRouter from "./routes/boardRoute";
+import verifyToken from "./middleware/verifyToken";
+import columnRouter from "./routes/columnRoute";
+import taskRouter from "./routes/taskRoute";
 
 const PORT = process.env.PORT || 3000;
 
@@ -26,6 +30,9 @@ app.get("/ping", (_, res) => {
 });
 
 app.use("/api/auth", userRouter);
+app.use("/api/board", boardRouter);
+app.use("/api/column", verifyToken, columnRouter);
+app.use("/api/task", verifyToken, taskRouter);
 
 app.use("*", (_, res) => {
   res.status(statusCode.NOT_FOUND).json({
