@@ -37,7 +37,12 @@ const Header = ({ boardId, boardName, refresh }: HeaderProp) => {
         />
       )}
       {showSearchUser && (
-        <AutoComplete open={showSearchUser} setOpen={setShowSearchUser} />
+        <AutoComplete
+          open={showSearchUser}
+          setOpen={setShowSearchUser}
+          boardId={boardId}
+          refresh={refresh}
+        />
       )}
       <div
         className={`flex flex-col gap-4 pb-4 ${

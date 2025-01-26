@@ -18,6 +18,7 @@ const TaskCard = ({
   dueDate,
   _id,
   refresh,
+  members,
 }: Partial<Task>) => {
   const updateData: TaskType = {
     taskName: taskName,
@@ -76,7 +77,13 @@ const TaskCard = ({
         />
       )}
       {showAutoComplete && (
-        <AutoComplete open={showAutoComplete} setOpen={setShowAutoComplete} />
+        <AutoComplete
+          open={showAutoComplete}
+          setOpen={setShowAutoComplete}
+          refresh={refresh!}
+          taskId={_id}
+          members={members}
+        />
       )}
       <div
         className={`relative p-2 rounded-md ${

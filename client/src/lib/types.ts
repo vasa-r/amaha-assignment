@@ -11,13 +11,19 @@ export type Board = {
   __v: number;
 };
 
-// interface AssignedUser {
-//   // Define the structure for assigned users if available
-//   // Add fields like user ID, email, or other details
-// }
+export interface User {
+  _id: string;
+  userName: string;
+  email: string;
+  profilePic: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
 
 interface Refresh {
   refresh: React.Dispatch<SetStateAction<boolean>>;
+  members: User[];
 }
 
 export interface Task extends Refresh {
@@ -43,12 +49,12 @@ interface Column {
   _id: string;
 }
 
-interface User {
-  email: string;
-  userName: string;
-  profilePic?: string;
-  _id: string;
-}
+// interface User {
+//   email: string;
+//   userName: string;
+//   profilePic?: string;
+//   _id: string;
+// }
 
 export interface BoardDetailsType {
   boardName: string;

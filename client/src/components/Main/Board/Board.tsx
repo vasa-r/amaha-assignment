@@ -32,7 +32,6 @@ const Board = () => {
       const items = await getBoard(boardId!);
       const { boardDetails } = items.data;
       setBoardDetails(boardDetails);
-      console.log(boardDetails);
     } catch (error) {
       console.log(error);
     } finally {
@@ -82,6 +81,7 @@ const Board = () => {
                           taskDesc={taskDesc}
                           priority={priority}
                           dueDate={dueDate}
+                          members={boardDetails.members}
                           _id={id}
                           refresh={setTriggerRefresh}
                         />

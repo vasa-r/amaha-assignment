@@ -70,4 +70,25 @@ const updateTask = async (taskId: string, updateData: Partial<Task>) => {
   }
 };
 
-export { createTask, deleteTask, updateTask };
+const assignTask = async (taskId: string, memberIds: string[]) => {
+  try {
+    const response = await apiClient.put(`/task/add-members/${taskId}`, {
+      memberIds,
+    });
+
+    return {
+      success: true,
+      data: response.data,
+      status: response.status,
+    };
+  } catch (error) {
+    const err = error as AxiosError;
+    return {
+      success: false,
+      data: err.response?.data || "An error occurred",
+      status: err.response?.status || 500,
+    };
+  }
+};
+
+export { createTask, deleteTask, updateTask, assignTask };
